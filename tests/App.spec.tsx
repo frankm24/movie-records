@@ -132,5 +132,35 @@ describe("App Component", () => {
         expect(screen.queryByRole("heading", {name: titleToDelete})).not.toBeInTheDocument();
         expect(screen.getAllByRole("heading", {level: 3})).toHaveLength(initialCount - 1);
     })
-    test("New movie can be added")
+    test("New movie can be added with songs", () => {
+        const newYtId = "dQw4w9WgXcQ";
+        const newSpotifyId1 = "4PTG3Z6ehGkBFwjybzWkR8"
+        const newSpotifyId2 = "0NQYXMweY1mVGnencTuZb4"
+        render(<App />);
+        // Determine the original number of movies by headings 
+        const headingsBefore = screen.getAllByRole("heading", { level: 3 }).length;  
+        // Click add new movie button
+        userEvent.click(screen.getByRole("button", {name: "Add New Movie"}));
+        // Scope into the modal dialog
+        const dialog = screen.getByRole("dialog");
+        // Input YouTube ID
+        const ytIdInput = within(dialog).getByLabelText("YouTube ID:");
+        userEvent.type(ytIdInput, newYtId);
+        // Add two songs by clicking add song twice
+        userEvent.click(within(dialog).getByRole("button", {name: "Add Song"}));
+        userEvent.click(within(dialog).getByRole("button", {name: "Add Song"}));
+        // Get song input textboxes
+        const allTextInputs = within(dialog).getAllByRole("textbox");
+        // Type Spotify IDs in Song textboxes
+        userEvent.type(allTextInputs[1], newSpotifyId1);
+        userEvent.type(allTextInputs[2], newSpotifyId2);
+        // Click one of the "X" buttons, deleting the song
+        userEvent.click(within(dialog).getAllByRole("button", {name: "❌"})[1])
+        // Click "Save Changes", adding the movie
+        userEvent.click(within(dialog).getByRole("button", {name: "Save Changes"}));
+        // Ensure that the dialog has gone
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+        // Ensure that the heading count has increased by 1 
+        expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(headingsBefore + 1);
+    })
 });
