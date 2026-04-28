@@ -119,5 +119,18 @@ describe("App Component", () => {
         expect(screen.queryByRole("button", {name: "Cancel"})).not.toBeInTheDocument();
         expect(screen.queryByText(newTitle)).not.toBeInTheDocument();
     })
-    
+    test("Movie can be deleted", () => {
+        render(<App />);
+        // Determine number of movies and the title of the 0th movie
+        const headingsBefore = screen.getAllByRole("heading", { level: 3 });                     
+        const initialCount = headingsBefore.length;              
+        const titleToDelete = headingsBefore[0].textContent;   
+        // Click edit and delete on 0th movie
+        userEvent.click(screen.getAllByRole("button", { name: "Edit" })[0]);
+        userEvent.click(screen.getByRole("button", { name: "Delete" })); 
+        // Ensure the title is gone and movie count decreased by one
+        expect(screen.queryByRole("heading", {name: titleToDelete})).not.toBeInTheDocument();
+        expect(screen.getAllByRole("heading", {level: 3})).toHaveLength(initialCount - 1);
+    })
+    test("New movie can be added")
 });
