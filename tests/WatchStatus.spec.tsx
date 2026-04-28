@@ -28,4 +28,8 @@ describe("WatchStatus component", () => {
         const watchedText = screen.getByText(/Not yet watched/i);
         expect(watchedText).toBeInTheDocument();
     });
+    it("Renders 'Watched' when seen is true", () => {
+        render(<WatchStatus watched={{seen: true, liked: false, when: null}}></WatchStatus>);
+        expect(screen.getByText("Watched")).toBeInTheDocument();
+    })
 });

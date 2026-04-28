@@ -163,4 +163,15 @@ describe("App Component", () => {
         // Ensure that the heading count has increased by 1 
         expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(headingsBefore + 1);
     })
+    test("Saving with empty year defaults released to 0", () => {
+        render(<App />);                                     
+        // Click edit button                                
+        userEvent.click(screen.getAllByRole("button", { name: "Edit" })[0]);                 
+        // Clear year released
+        userEvent.clear(screen.getByRole("spinbutton")); 
+        // Save changes
+        userEvent.click(screen.getByRole("button", { name: "Save" }));   
+        // Ensure default value of 0 is rendered                     
+        expect(screen.getByText("Released 0")).toBeInTheDocument();                         
+    });         
 });
